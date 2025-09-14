@@ -1,1 +1,19 @@
+syntax = "proto3";
+package quantbook;
+
+message Instrument { string symbol = 1; }
+message SubscribeRequest { string symbol = 1; int32 depth = 2; }
+
+message PriceLevel { double price = 1; double size = 2; }
+
+message OrderBookUpdate {
+  string symbol = 1;
+  int64 ts_unix_ms = 2;
+  repeated PriceLevel bids = 3;
+  repeated PriceLevel asks = 4;
+}
+
+service MarketData {
+  rpc StreamOrderBook(SubscribeRequest) returns (stream OrderBookUpdate);
+}
 
