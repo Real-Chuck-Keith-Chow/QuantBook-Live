@@ -1,32 +1,22 @@
-// server.js
-require("dotenv").config({ path: "config/dev.env" });
+// client/src/MarketChart.jsx
+import { useEffect, useState } from "react";
 
-const path = require("path");
-const grpc = require("@grpc/grpc-js");
-const protoLoader = require("@grpc/proto-loader");
-const WebSocket = require("ws");
+export default function MarketChart() {
+  const [ob, setOb] = useState({ symbol: "FAKE", bids: [], asks: [] });
 
-const PROTO_PATH = path.join(__dirname, "protos", "market_data.proto");
-const pkgDef = protoLoader.loadSync(PROTO_PATH, {
-  keepCase: true, longs: String, enums: String, defaults: true, oneofs: true,
-});
-const proto = grpc.loadPackageDefinition(pkgDef).quantbook;
+  useEffect(() => {
+    const port = import.meta.env.VITE_WS_PORT || 8080;
+    const ws = new WebSocket(`ws://localhost:${port}/ws/depth`);
+    ws.onmessage = (e) => setOb(JSON.parse(e.data));
+    return () => ws.close();
+  }, []);
 
-const GRPC_PORT = process.env.GRPC_PORT || 50051;
-const WS_PORT   = process.env.WS_PORT   || 8080;
-
-const client = new proto.MarketData(
-  `localhost:${GRPC_PORT}`,
-  grpc.credentials.createInsecure()
-);
-
-const wss = new WebSocket.Server({ port: WS_PORT, path: "/ws/depth" });
-wss.on("connection", (ws) => {
-  const call = client.StreamOrderBook({ symbol: "FAKE", depth: 10 });
-  call.on("data", (u) => ws.send(JSON.stringify(u)));
-  call.on("error", (e) => ws.close(1011, e.message));
-  call.on("end",   () => ws.close());
-  ws.on("close",   () => call.cancel());
-});
-
-console.log(`✅ WS gateway: ws://localhost:${WS_PORT}/ws/depth (→ gRPC :${GRPC_PORT})`);
+  const b = ob.bids?.[0], a = ob.asks?.[0];
+  return (
+    <div style={{ padding: 16 }}>
+      <h2>Top of Book — {ob.symbol}</h2>
+      <div>Bid: {b ? `${b.price.toFixed(2)} x ${b.size.toFixed(2)}` : "-"}</div>
+      <div>Ask: {a ? `${a.price.toFixed(2)} x ${a.size.toFixed(2)}` : "-"}</div>
+    </div>
+  );
+}
