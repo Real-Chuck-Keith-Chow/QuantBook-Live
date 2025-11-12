@@ -1,0 +1,28 @@
+# pyproject.toml (root)
+[project]
+name = "quantbook_live"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+  "grpcio>=1.64",
+  "grpcio-tools>=1.64",
+  "pydantic>=2.9",
+  "numpy>=2.0",
+  "pandas>=2.2",
+  "websockets>=13.0",
+  "psycopg[binary]>=3.2",
+  "sqlalchemy>=2.0",
+  "pytest>=8.3",
+  "rich>=13.9",
+]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+pythonpath = ["server", "Core"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
