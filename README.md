@@ -71,7 +71,73 @@ git clone https://github.com/Real-Chuck-Keith-Chow/QuantBook-Live.git
 cd QuantBook-Live
 make setup
 
+2️⃣ Generate Proto Stubs
 make proto
+
+3️⃣ Launch the Server
+make run-server
+
+4️⃣ (Optional) Run in Docker
+docker compose up -d
+
+⚙️ Environment Variables
+
+Copy .env.example → .env and edit values:
+
+cp .env.example .env
+
+Variable	Description
+DB_HOST	PostgreSQL/Timescale host
+DB_PORT	Database port
+GRPC_PORT	gRPC server port
+WS_PORT	WebSocket port
+SYMBOLS	Comma-separated list of symbols to simulate
+BOOK_DEPTH	Order-book depth levels
+TICK_INTERVAL_MS	Tick generation frequency
+🧪 Testing & Linting
+make lint     # Run ruff + mypy checks
+make test     # Execute pytest suite
+
+🐋 Docker Compose
+
+Spin up everything (DB + gateway + generator + UI):
+
+docker compose up --build
+
+
+Then visit http://localhost:5173
+ for the React dashboard.
+
+💻 Tech Stack
+Layer	Technology
+Backend	Python 3.11 · gRPC · AsyncIO · SQLAlchemy
+Frontend	React · Vite · WebSocket client
+Database	TimescaleDB (PostgreSQL 16 extension)
+DevOps	Docker · Make · GitHub Actions CI
+Tools	Ruff · Mypy · Pytest · Rich · Dotenv
+🛠 Roadmap
+
+ Add real-exchange replay mode (NASDAQ TotalView ITCH parser)
+
+ Integrate AI-based anomaly detection for liquidity shocks
+
+ Deploy hosted demo dashboard
+
+ Add FIX bridge for external trading bots
+
+🧑‍💻 Author
+
+Cheuk Fung Keith Chow
+📍 Toronto, Canada
+🌐 GitHub @Real-Chuck-Keith-Chow
+
+📜 License
+
+This project is licensed under the MIT License
+ — free for personal and commercial use.
+
+⭐ If this project sparks your interest, give it a star and contribute!
+Let’s build the future of open-source quant simulation together ⚙️💸
 
 make run-server
 
