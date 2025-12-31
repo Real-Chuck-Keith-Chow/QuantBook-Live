@@ -1,1 +1,28 @@
+syntax = "proto3";
 
+package marketdata;
+
+// Request depth snapshots/deltas for a given symbol.
+message MarketDataRequest {
+  string symbol = 1;
+  int32 depth = 2;
+}
+
+// Individual price level.
+message PriceLevel {
+  double price = 1;
+  double size = 2;
+}
+
+// Streaming order book update.
+message OrderBookUpdate {
+  string symbol = 1;
+  int64 ts_unix_ms = 2;
+  repeated PriceLevel bids = 3;
+  repeated PriceLevel asks = 4;
+}
+
+// Market data service definition.
+service MarketData {
+  rpc StreamOrderBook(MarketDataRequest) returns (stream OrderBookUpdate);
+}
