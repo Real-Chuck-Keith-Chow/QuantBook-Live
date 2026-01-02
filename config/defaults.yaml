@@ -1,1 +1,18 @@
+# Default configuration for QuantBook-Live
+db:
+  host: localhost
+  port: 5432
+  user: postgres
+  password: postgres
+  name: quantbook
 
+grpc:
+  port: 50051
+
+ws:
+  port: 8080
+
+market:
+  symbols: ["FAKE"]
+  book_depth: 10
+  tick_interval_ms: 100
